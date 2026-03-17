@@ -1,8 +1,12 @@
 # sayit
 
-`sayit` is a Python CLI for rewriting short, awkward, blunt, or not-sendable messages into cleaner versions that you can copy and send.
+[中文](README.zh-CN.md) | English
+
+`sayit` is a Python CLI for rewriting short, awkward, blunt, or not-sendable messages into cleaner versions you can copy and send.
 
 It is not a chatbot and it is not a long-form writing assistant.
+
+## Overview
 
 The product boundary is intentional:
 
@@ -11,9 +15,7 @@ The product boundary is intentional:
 - explicit social intent
 - controlled rewrite instead of free generation
 
-## What it does
-
-Given input like:
+Typical inputs:
 
 - `你这个怎么还没弄完`
 - `这个价格太高了`
@@ -21,14 +23,14 @@ Given input like:
 - `你先把钱转我`
 - `我这边要延期`
 
-`sayit` produces variants such as:
+Typical outputs:
 
-- polite
-- direct
-- firm
-- soft
+- `polite`
+- `direct`
+- `firm`
+- `soft`
 
-And `sayit explain` tells you:
+`sayit explain` also tells you:
 
 - detected intent
 - risk flags
@@ -39,11 +41,11 @@ And `sayit explain` tells you:
 - Chinese-first local rewrite engine
 - intent detection and risk detection
 - rule-driven planner
-- YAML-based templates
+- YAML-based template system
 - `argv`, `stdin`, file, and clipboard input
 - `pretty`, `plain`, and `json` output
 - `explain` command
-- OpenAI-compatible provider scaffold
+- OpenAI-compatible provider scaffolding
 - `local`, `ai`, and `hybrid` modes
 
 ## Install
@@ -54,73 +56,68 @@ source .venv/bin/activate
 pip install -e ".[dev]"
 ```
 
-Or install the local repo with `pipx`:
+You can also install the local repo with `pipx`:
 
 ```bash
 pipx install .
 ```
 
-After install, the CLI is available as:
+After install, you can run:
 
 ```bash
 sayit "你这个怎么还没弄完"
 ```
 
-If you do not install the package yet, you can still run it with:
+If you have not installed the package yet, you can still run:
 
 ```bash
 PYTHONPATH=src python -m sayit "你这个怎么还没弄完"
 ```
 
-## Where the API key should go
+## Where the API Key Should Go
 
-Do not hardcode API keys in source files.
+Do not hardcode real API keys in source files or config files.
 
-The recommended setup is:
+Recommended setup:
 
 1. Put the real key in an environment variable.
 2. Keep only the environment variable name in config.
 3. Commit `.env.example`, never commit `.env`.
 
-### Recommended for local development
+### Local Development
 
-Create a `.env` file in the project root:
+Create a `.env` file:
 
 ```bash
 cp .env.example .env
 ```
 
-Then fill in the key you need:
+Then fill in the key you want to use:
 
 ```bash
 OPENAI_API_KEY=your_real_key_here
 OPENROUTER_API_KEY=
 ```
 
-`sayit` loads `.env` automatically at runtime.
+The app loads `.env` automatically at runtime.
 
-### Recommended for production or CI
+### Production or CI
 
-Use environment variables provided by your shell, CI, or hosting platform:
+Use shell or platform environment variables instead:
 
 ```bash
 export OPENAI_API_KEY="your_real_key_here"
 ```
 
-### Config file location
+### Config File Location
 
-The config file lives at:
+The user config file lives at:
 
 ```text
 ~/.config/sayit/config.toml
 ```
 
-Important:
-
-- the config file should store `api_key_env = "OPENAI_API_KEY"`
-- the config file should not store the secret itself
-
-Default provider config is already wired like this:
+It should store the environment variable name, not the secret itself:
 
 ```toml
 [providers.openai]
@@ -129,9 +126,9 @@ model = "gpt-4.1-mini"
 api_key_env = "OPENAI_API_KEY"
 ```
 
-## Quick start
+## Quick Start
 
-### Local mode, no API required
+### Local Mode, No API Required
 
 ```bash
 sayit "你这个怎么还没弄完"
@@ -139,7 +136,7 @@ sayit "我今天不想去了" --tone soft
 sayit explain "这个价格太高了"
 ```
 
-### AI or hybrid mode
+### AI or Hybrid Mode
 
 ```bash
 sayit "这个价格太高了" --mode ai
@@ -148,12 +145,12 @@ sayit "你这个怎么还没弄完" --mode hybrid
 
 Default behavior:
 
-- if no available provider is configured: `local`
-- if a provider is available: `hybrid`
+- if no provider is available, use `local`
+- if a provider is available, default to `hybrid`
 
 ## Usage
 
-### Direct input
+### Direct Input
 
 ```bash
 sayit "你这个怎么还没弄完"
@@ -165,7 +162,7 @@ sayit "你这个怎么还没弄完"
 sayit --clipboard
 ```
 
-### File input
+### File Input
 
 ```bash
 sayit draft.txt
@@ -178,13 +175,13 @@ pbpaste | sayit
 cat raw.txt | sayit --plain
 ```
 
-### Explain mode
+### Explain Mode
 
 ```bash
 sayit explain "你先把钱转我"
 ```
 
-### Common options
+### Common Options
 
 ```bash
 sayit "这个价格太高了" --context bargain
@@ -207,30 +204,28 @@ sayit providers test
 sayit templates list
 ```
 
-## Output formats
+## Output Formats
 
-### pretty
+### `pretty`
 
-Human-readable terminal output with:
+Human-readable output with:
 
 - original text
 - intent
 - risk flags
 - candidate rewrites
 
-### plain
+### `plain`
 
-Only the candidate texts.
-
-Useful for copy/paste or shell piping:
+Only outputs candidate texts, useful for copy/paste or shell piping.
 
 ```bash
 sayit "你这个怎么还没弄完" --plain
 ```
 
-### json
+### `json`
 
-Useful for scripts and other tools:
+Useful for scripts or integrations.
 
 ```bash
 sayit "这个价格太高了" --json
@@ -238,25 +233,25 @@ sayit "这个价格太高了" --json
 
 ## Modes
 
-### local
+### `local`
 
 - no API required
-- fast and deterministic
+- fast, deterministic, predictable
 - driven by local rules and templates
 
-### ai
+### `ai`
 
 - all candidate generation goes through the provider
-- better for more nuanced language
+- better for more nuanced rewrites
 - requires provider config and runtime key
 
-### hybrid
+### `hybrid`
 
-- local detector and planner first
-- provider generates controlled candidates
-- failures can fall back to local behavior
+- local engine handles detector and planner first
+- provider handles controlled generation
+- can fall back to local behavior on provider failures
 
-## Project structure
+## Project Structure
 
 ```text
 src/sayit/
@@ -280,7 +275,7 @@ Run tests:
 pytest
 ```
 
-List available templates:
+List templates:
 
 ```bash
 sayit templates list
@@ -299,25 +294,25 @@ Initialize user config:
 sayit config init
 ```
 
-## Known limitations
+## Known Limitations
 
 - Chinese templates are much stronger than English support right now.
-- AI mode is implemented, but provider behavior still needs broader real-world validation.
-- The local engine is intentionally conservative and only covers a limited set of high-frequency intents.
+- AI mode is implemented, but still needs broader real-world validation.
+- The local engine is intentionally conservative and only covers a limited set of high-frequency cases.
 - There is no GUI, chat history import, or auto-send integration.
 
 ## Roadmap
 
-- Expand the template and ruleset for the six core intents
+- Expand the rules and templates for the six core intents
 - Add English templates and tests
-- Add stable snapshot tests for representative rewrite cases
-- Add stronger fact-preservation and fabricated-reason checks
+- Add stable snapshot tests
+- Strengthen fact-preservation and fabricated-reason checks
 - Improve provider-specific error handling and integration coverage
 - Publish to PyPI for `pipx install sayit`
 
-## Open source readiness
+## Open Source Notes
 
-Good enough for a first public repo:
+This repository now has the minimum structure for a first public release:
 
 - clear README
 - `.gitignore`
@@ -325,34 +320,24 @@ Good enough for a first public repo:
 - basic CI
 - local MVP
 
-Before the first public release, replace `REPLACE_ME` placeholders in:
+Before the first public release, replace the repository placeholders in:
 
-- [pyproject.toml](/Users/macbookpro/Documents/code/Sayit/pyproject.toml)
-- [.github/ISSUE_TEMPLATE/config.yml](/Users/macbookpro/Documents/code/Sayit/.github/ISSUE_TEMPLATE/config.yml)
-
-Still worth adding before wider promotion:
-
-- choose a license
-- add more templates and rules
-- improve English template coverage
-- add snapshot tests for stable outputs
-- add real provider integration tests
-- add issue templates and contribution guide
-- polish CLI help text and error messages
+- `pyproject.toml`
+- `.github/ISSUE_TEMPLATE/config.yml`
 
 ## Contributing
 
-See [CONTRIBUTING.md](/Users/macbookpro/Documents/code/Sayit/CONTRIBUTING.md).
+See [CONTRIBUTING.md](CONTRIBUTING.md).
 
 ## Changelog
 
-See [CHANGELOG.md](/Users/macbookpro/Documents/code/Sayit/CHANGELOG.md).
+See [CHANGELOG.md](CHANGELOG.md).
 
 ## License
 
-MIT. See [LICENSE](/Users/macbookpro/Documents/code/Sayit/LICENSE).
+MIT. See [LICENSE](LICENSE).
 
-## Design principles
+## Design Principles
 
 - controlled generation over free-form generation
 - do not invent facts by default
