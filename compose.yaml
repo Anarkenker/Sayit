@@ -3,6 +3,10 @@ services:
     build: .
     image: sayit:local
     environment:
+      SAYIT_PROVIDER_DEFAULT: ${SAYIT_PROVIDER_DEFAULT:-}
+      SAYIT_CUSTOM_BASE_URL: ${SAYIT_CUSTOM_BASE_URL:-}
+      SAYIT_CUSTOM_MODEL: ${SAYIT_CUSTOM_MODEL:-}
+      SAYIT_CUSTOM_API_KEY: ${SAYIT_CUSTOM_API_KEY:-}
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
       OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
     stdin_open: true

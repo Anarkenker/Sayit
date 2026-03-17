@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source "$(cd "$(dirname "$0")" && pwd)/scripts/docker-common.sh"
+
+ensure_docker_cli
+bootstrap_env_file
+maybe_start_docker
+build_image
+install_shell_command
+
+print_note ""
+if env_has_any_key; then
+  print_note "Setup complete."
+  print_note "Next, run:"
+  print_note "  sayit \"你这个怎么还没弄完\""
+else
+  print_note "Setup complete, but .env does not contain a key yet."
+  print_note "Open .env, fill OPENAI_API_KEY=..., then run:"
+  print_note "  sayit \"你这个怎么还没弄完\""
+fi

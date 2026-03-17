@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+source "$(cd "$(dirname "$0")" && pwd)/scripts/docker-common.sh"
+
+if [[ $# -eq 0 ]]; then
+  print_note "Usage:"
+  print_note "  sayit \"你这个怎么还没弄完\""
+  print_note "  sayit explain \"你先把钱转我\""
+  print_note "  sayit \"这个价格太高了\" --json"
+  exit 1
+fi
+
+ensure_docker_cli
+ensure_env_file
+if ! env_has_any_key; then
+  print_note ".env exists, but no key is filled in yet."
+  print_note "Open .env and paste your key after OPENAI_API_KEY=, then try again."
+  exit 1
+fi
+maybe_start_docker
+ensure_image
+
+run_args=(run --rm --env-file "$ROOT_DIR/.env" -v "$PWD:/workspace" -w /workspace)
+
+while IFS= read -r flag; do
+  [[ -n "$flag" ]] && run_args+=("$flag")
+done < <(docker_run_flags)
+
+run_args+=("$IMAGE_NAME" "$@")
+
+docker "${run_args[@]}"

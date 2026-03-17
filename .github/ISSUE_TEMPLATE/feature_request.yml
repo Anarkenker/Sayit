@@ -1,0 +1,39 @@
+name: Feature request
+description: Suggest a focused improvement for sayit.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Please keep feature requests aligned with sayit's scope: short, controlled message rewriting.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What user problem does this solve?
+      placeholder: We need better refusal templates for client-facing messages
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: Describe the change you want.
+    validations:
+      required: true
+  - type: textarea
+    id: examples
+    attributes:
+      label: Example inputs and outputs
+      description: Show at least one realistic example.
+      placeholder: |
+        Input: 我今天来不了
+        Desired style: softer client-facing variants
+    validations:
+      required: true
+  - type: textarea
+    id: notes
+    attributes:
+      label: Additional context
+      description: Tradeoffs, constraints, or related issues.

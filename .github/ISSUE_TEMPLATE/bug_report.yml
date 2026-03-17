@@ -1,0 +1,47 @@
+name: Bug report
+description: Report a reproducible bug in sayit.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please make the report reproducible.
+  - type: input
+    id: summary
+    attributes:
+      label: Summary
+      description: Short description of the problem.
+      placeholder: sayit returns the wrong intent for a follow-up message
+    validations:
+      required: true
+  - type: textarea
+    id: command
+    attributes:
+      label: Command
+      description: The exact command you ran.
+      placeholder: sayit "你这个怎么还没弄完" --json
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+      description: What should have happened.
+    validations:
+      required: true
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+      description: What actually happened. Include output or traceback if available.
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Environment
+      description: OS, install method, Docker or local run path, and provider setup if relevant.
+      placeholder: macOS, used ./setup and ./sayit, Docker Desktop running, OpenAI key configured in .env
+    validations:
+      required: true

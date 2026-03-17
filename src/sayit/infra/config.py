@@ -86,7 +86,7 @@ def load_config() -> AppConfig:
     load_dotenv()
     path = config_path()
     if not path.exists():
-        return AppConfig(
+        config = AppConfig(
             providers={
                 "openai": ProviderConfig(
                     base_url="https://api.openai.com/v1",
@@ -105,14 +105,27 @@ def load_config() -> AppConfig:
                 ),
             }
         )
+    else:
+        with path.open("rb") as file:
+            data = tomllib.load(file)
+        config = AppConfig.model_validate(data)
 
-    with path.open("rb") as file:
-        data = tomllib.load(file)
-
-    config = AppConfig.model_validate(data)
     if config.provider.timeout_seconds:
         for provider in config.providers.values():
             provider.timeout_seconds = config.provider.timeout_seconds
+
+    custom_base_url = os.getenv("SAYIT_CUSTOM_BASE_URL")
+    custom_model = os.getenv("SAYIT_CUSTOM_MODEL")
+    if custom_base_url and custom_model:
+        config.providers["custom"] = ProviderConfig(
+            base_url=custom_base_url,
+            model=custom_model,
+            api_key_env="SAYIT_CUSTOM_API_KEY",
+            timeout_seconds=config.provider.timeout_seconds,
+        )
+
+    if provider_default := os.getenv("SAYIT_PROVIDER_DEFAULT"):
+        config.provider.default = provider_default
     return config
 
 

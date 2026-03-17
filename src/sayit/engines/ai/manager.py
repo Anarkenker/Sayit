@@ -51,8 +51,10 @@ class AIRewriteManager:
         return self._providers.get(default_name)
 
     def _build_providers(self) -> dict[str, object]:
-        return {
-            "openai": OpenAICompatibleProvider("openai", self._config.providers.get("openai")),
-            "openrouter": OpenAICompatibleProvider("openrouter", self._config.providers.get("openrouter")),
-            "ollama": OllamaProvider(self._config.providers.get("ollama")),
-        }
+        providers: dict[str, object] = {}
+        for name, config in self._config.providers.items():
+            if name == "ollama":
+                providers[name] = OllamaProvider(config)
+            else:
+                providers[name] = OpenAICompatibleProvider(name, config)
+        return providers
