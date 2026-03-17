@@ -1,0 +1,13 @@
+services:
+  sayit:
+    build: .
+    image: sayit:local
+    environment:
+      OPENAI_API_KEY: ${OPENAI_API_KEY:-}
+      OPENROUTER_API_KEY: ${OPENROUTER_API_KEY:-}
+    stdin_open: true
+    tty: true
+    working_dir: /workspace
+    volumes:
+      - .:/workspace
+    entrypoint: ["sayit"]

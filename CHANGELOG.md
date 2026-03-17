@@ -9,11 +9,12 @@ The format is based on Keep a Changelog.
 ### Added
 
 - Initial CLI rewrite flow
+- API-only rewrite flow backed by provider calls
 - Local rule-driven intent and risk detection
-- YAML template system for core Chinese intents
 - `explain` command
 - Provider scaffolding for OpenAI-compatible APIs
 - Config loading from `~/.config/sayit/config.toml`
 - `.env` loading for local provider keys
+- Dockerfile, compose setup, and Docker-first docs
 - GitHub Actions test workflow
 - Contribution docs and GitHub templates

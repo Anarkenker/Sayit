@@ -11,8 +11,7 @@ from sayit.domain.validators import CandidateValidator
 from sayit.domain.models import ContextType, ModeType, RewriteRequest, ToneType
 from sayit.engines.ai.manager import AIRewriteManager, ProviderUnavailableError
 from sayit.engines.local.detector import LocalIntentDetector
-from sayit.engines.local.generator import LocalGenerator
-from sayit.engines.local.templates import TemplateRepository
+from sayit.engines.local.rules import RuleRepository
 from sayit.infra.config import (
     load_config,
     provider_env_status,
@@ -33,11 +32,11 @@ app = typer.Typer(
 )
 config_app = typer.Typer(help="Config commands.")
 providers_app = typer.Typer(help="Provider commands.")
-templates_app = typer.Typer(help="Template commands.")
+rules_app = typer.Typer(help="Rule commands.")
 
 app.add_typer(config_app, name="config")
 app.add_typer(providers_app, name="providers")
-app.add_typer(templates_app, name="templates")
+app.add_typer(rules_app, name="rules")
 
 console = Console()
 error_console = Console(stderr=True)
@@ -45,14 +44,13 @@ error_console = Console(stderr=True)
 
 def build_services() -> tuple[RewriteService, ExplainService]:
     config = load_config()
-    templates = TemplateRepository()
-    detector = LocalIntentDetector(templates)
+    rules = RuleRepository()
+    detector = LocalIntentDetector(rules)
     planner = RewritePlanner()
     rewrite_service = RewriteService(
         config=config,
         detector=detector,
         planner=planner,
-        local_generator=LocalGenerator(templates),
         validator=CandidateValidator(),
         scorer=CandidateScorer(),
         ai_manager=AIRewriteManager(config),
@@ -61,7 +59,7 @@ def build_services() -> tuple[RewriteService, ExplainService]:
     return rewrite_service, explain_service
 
 
-KNOWN_COMMANDS = {"rewrite", "explain", "config", "providers", "templates"}
+KNOWN_COMMANDS = {"rewrite", "explain", "config", "providers", "rules"}
 
 
 def normalize_argv(argv: list[str]) -> list[str]:
@@ -182,16 +180,16 @@ def providers_test() -> None:
     raise typer.Exit(code=1 if failed else 0)
 
 
-@templates_app.command("list")
-def templates_list(
+@rules_app.command("list")
+def rules_list(
     language: str = typer.Option("zh", "--language"),
 ) -> None:
-    templates = TemplateRepository()
+    rules = RuleRepository()
     lines = [f"language: {language}", ""]
-    for intent in templates.list_intents(language):
-        bundle = templates.load_intent_templates(language, intent)
-        tones = sorted(bundle.get("audiences", {}).get("default", {}).keys())
-        lines.append(f"- {intent}: {', '.join(tones)}")
+    for rule in rules.load_rules(language):
+        lines.append(
+            f"- {rule['id']}: intent={rule['intent']}, risk_flags={', '.join(rule.get('risk_flags', []))}"
+        )
     console.print("\n".join(lines))
 
 

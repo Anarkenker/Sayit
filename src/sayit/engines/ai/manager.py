@@ -31,11 +31,20 @@ class AIRewriteManager:
     ) -> list[Candidate]:
         provider = self._resolve_default_provider()
         if provider is None or not provider.available():
-            raise ProviderUnavailableError("No available AI provider configured.")
+            raise ProviderUnavailableError(
+                f"No available AI provider configured for default provider '{self._config.provider.default}'. "
+                "Run 'sayit providers list' and set the required API key or provider config."
+            )
         try:
             return provider.rewrite(request, detected, plan)
         except Exception as exc:  # pragma: no cover - depends on provider runtime
             raise ProviderUnavailableError(str(exc)) from exc
+
+    def provider_label(self) -> str:
+        provider = self._resolve_default_provider()
+        if provider is None:
+            return "ai"
+        return getattr(provider, "name", "ai")
 
     def _resolve_default_provider(self):
         default_name = self._config.provider.default

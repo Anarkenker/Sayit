@@ -2,12 +2,12 @@ import re
 from collections import Counter, defaultdict
 
 from sayit.domain.models import ContextType, DetectedIntent, IntentType, RiskFlag
-from sayit.engines.local.templates import TemplateRepository
+from sayit.engines.local.rules import RuleRepository
 
 
 class LocalIntentDetector:
-    def __init__(self, templates: TemplateRepository) -> None:
-        self._templates = templates
+    def __init__(self, rules: RuleRepository) -> None:
+        self._rules = rules
 
     def detect(
         self,
@@ -15,7 +15,7 @@ class LocalIntentDetector:
         language: str = "zh",
         context: ContextType | None = None,
     ) -> DetectedIntent:
-        rules = self._templates.load_rules(language)
+        rules = self._rules.load_rules(language)
         intent_scores: defaultdict[IntentType, float] = defaultdict(float)
         risk_counter: Counter[RiskFlag] = Counter()
         matched_rules = 0

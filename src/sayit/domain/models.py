@@ -5,9 +5,7 @@ from pydantic import BaseModel, Field
 
 class ModeType(str, Enum):
     AUTO = "auto"
-    LOCAL = "local"
     AI = "ai"
-    HYBRID = "hybrid"
 
 
 class ToneType(str, Enum):
@@ -91,4 +89,4 @@ class RewriteResult(BaseModel):
     detected_intent: DetectedIntent
     plan: RewritePlan
     candidates: list[Candidate]
-    engine: str = "local"
+    engine: str = "ai"

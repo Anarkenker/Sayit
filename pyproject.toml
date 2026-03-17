@@ -18,7 +18,7 @@ keywords = [
   "tone",
   "communication",
   "ai",
-  "templates",
+  "docker",
 ]
 classifiers = [
   "Development Status :: 3 - Alpha",
@@ -55,11 +55,10 @@ dev = [
 [project.scripts]
 sayit = "sayit.main:run"
 
-# Replace these placeholders with the real repository URL before the first public release.
 [project.urls]
-Homepage = "https://github.com/REPLACE_ME/sayit"
-Repository = "https://github.com/REPLACE_ME/sayit"
-Issues = "https://github.com/REPLACE_ME/sayit/issues"
+Homepage = "https://github.com/Anarkenker/Sayit"
+Repository = "https://github.com/Anarkenker/Sayit"
+Issues = "https://github.com/Anarkenker/Sayit/issues"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
@@ -68,7 +67,7 @@ package-dir = {"" = "src"}
 where = ["src"]
 
 [tool.setuptools.package-data]
-sayit = ["templates/**/*.yaml"]
+sayit = ["rules/*.yaml"]
 
 [tool.pytest.ini_options]
 pythonpath = ["src"]

@@ -2,18 +2,19 @@
 
 [中文](README.zh-CN.md) | English
 
-`sayit` is a Python CLI for rewriting short, awkward, blunt, or not-sendable messages into cleaner versions you can copy and send.
+`sayit` is an API-first CLI for rewriting short, blunt, or awkward messages into cleaner versions you can send.
 
 It is not a chatbot and it is not a long-form writing assistant.
 
 ## Overview
 
-The product boundary is intentional:
+`sayit` focuses on:
 
 - short input
 - short output
 - explicit social intent
-- controlled rewrite instead of free generation
+- controlled rewriting
+- API-based generation
 
 Typical inputs:
 
@@ -30,51 +31,106 @@ Typical outputs:
 - `firm`
 - `soft`
 
-`sayit explain` also tells you:
+`sayit explain` still gives you:
 
 - detected intent
 - risk flags
 - rewrite strategy
 
+The rewrite path itself is API-only.
+
 ## Current MVP
 
-- Chinese-first local rewrite engine
-- intent detection and risk detection
+- API-only rewrite generation
+- local intent and risk detection for controlled prompting
 - rule-driven planner
-- YAML-based template system
 - `argv`, `stdin`, file, and clipboard input
 - `pretty`, `plain`, and `json` output
 - `explain` command
-- OpenAI-compatible provider scaffolding
-- `local`, `ai`, and `hybrid` modes
+- OpenAI-compatible provider support
+- Docker-first usage
 
-## Install
+## Recommended Usage: Docker
+
+Build the image:
+
+```bash
+docker build -t sayit .
+```
+
+Create a local `.env` file:
+
+```bash
+cp .env.example .env
+```
+
+Fill in your provider key:
+
+```bash
+OPENAI_API_KEY=your_real_key_here
+OPENROUTER_API_KEY=
+```
+
+Run with direct input:
+
+```bash
+docker run --rm --env-file .env sayit "你这个怎么还没弄完"
+```
+
+Run with JSON output:
+
+```bash
+docker run --rm --env-file .env sayit "这个价格太高了" --json
+```
+
+Run `explain`:
+
+```bash
+docker run --rm --env-file .env sayit explain "你先把钱转我"
+```
+
+Run with stdin:
+
+```bash
+echo "这个价格太高了" | docker run --rm -i --env-file .env sayit --plain
+```
+
+Run with a mounted file:
+
+```bash
+docker run --rm --env-file .env -v "$PWD:/workspace" -w /workspace sayit draft.txt
+```
+
+Use Docker Compose:
+
+```bash
+docker compose run --rm sayit "你这个怎么还没弄完"
+```
+
+Notes:
+
+- Docker is the recommended runtime path.
+- `--clipboard` is less practical inside containers.
+- If you use file input, mount the working directory.
+
+## Alternative: Local Python Setup
+
+If you still want to run it directly:
 
 ```bash
 python -m venv .venv
 source .venv/bin/activate
 pip install -e ".[dev]"
-```
-
-You can also install the local repo with `pipx`:
-
-```bash
-pipx install .
-```
-
-After install, you can run:
-
-```bash
 sayit "你这个怎么还没弄完"
 ```
 
-If you have not installed the package yet, you can still run:
+Or without installation:
 
 ```bash
 PYTHONPATH=src python -m sayit "你这个怎么还没弄完"
 ```
 
-## Where the API Key Should Go
+## API Key Setup
 
 Do not hardcode real API keys in source files or config files.
 
@@ -84,32 +140,8 @@ Recommended setup:
 2. Keep only the environment variable name in config.
 3. Commit `.env.example`, never commit `.env`.
 
-### Local Development
-
-Create a `.env` file:
-
-```bash
-cp .env.example .env
-```
-
-Then fill in the key you want to use:
-
-```bash
-OPENAI_API_KEY=your_real_key_here
-OPENROUTER_API_KEY=
-```
-
-The app loads `.env` automatically at runtime.
-
-### Production or CI
-
-Use shell or platform environment variables instead:
-
-```bash
-export OPENAI_API_KEY="your_real_key_here"
-```
-
-### Config File Location
+The app loads `.env` automatically at runtime when running outside Docker.  
+Inside Docker, prefer `--env-file .env`.
 
 The user config file lives at:
 
@@ -128,25 +160,11 @@ api_key_env = "OPENAI_API_KEY"
 
 ## Quick Start
 
-### Local Mode, No API Required
-
 ```bash
-sayit "你这个怎么还没弄完"
-sayit "我今天不想去了" --tone soft
-sayit explain "这个价格太高了"
+docker run --rm --env-file .env sayit "你这个怎么还没弄完"
+docker run --rm --env-file .env sayit "这个价格太高了" --context bargain
+docker run --rm --env-file .env sayit explain "我今天不想去了"
 ```
-
-### AI or Hybrid Mode
-
-```bash
-sayit "这个价格太高了" --mode ai
-sayit "你这个怎么还没弄完" --mode hybrid
-```
-
-Default behavior:
-
-- if no provider is available, use `local`
-- if a provider is available, default to `hybrid`
 
 ## Usage
 
@@ -201,7 +219,7 @@ sayit config init
 sayit config show
 sayit providers list
 sayit providers test
-sayit templates list
+sayit rules list
 ```
 
 ## Output Formats
@@ -217,7 +235,7 @@ Human-readable output with:
 
 ### `plain`
 
-Only outputs candidate texts, useful for copy/paste or shell piping.
+Only outputs candidate texts.
 
 ```bash
 sayit "你这个怎么还没弄完" --plain
@@ -233,23 +251,16 @@ sayit "这个价格太高了" --json
 
 ## Modes
 
-### `local`
-
-- no API required
-- fast, deterministic, predictable
-- driven by local rules and templates
-
 ### `ai`
 
-- all candidate generation goes through the provider
-- better for more nuanced rewrites
+- all rewrite candidates are generated through the provider
 - requires provider config and runtime key
+- recommended for normal usage
 
-### `hybrid`
+### `auto`
 
-- local engine handles detector and planner first
-- provider handles controlled generation
-- can fall back to local behavior on provider failures
+- currently resolves to the configured provider path
+- kept mainly for CLI/config compatibility
 
 ## Project Structure
 
@@ -263,8 +274,10 @@ src/sayit/
   infra/
   input/
   output/
-  templates/
+  rules/
 tests/
+Dockerfile
+compose.yaml
 ```
 
 ## Development
@@ -275,10 +288,10 @@ Run tests:
 pytest
 ```
 
-List templates:
+List rules:
 
 ```bash
-sayit templates list
+sayit rules list
 ```
 
 Show provider status:
@@ -296,19 +309,18 @@ sayit config init
 
 ## Known Limitations
 
-- Chinese templates are much stronger than English support right now.
-- AI mode is implemented, but still needs broader real-world validation.
-- The local engine is intentionally conservative and only covers a limited set of high-frequency cases.
-- There is no GUI, chat history import, or auto-send integration.
+- Rewrite generation now requires an available provider.
+- Chinese rule coverage is stronger than English support right now.
+- `explain` is local analysis, while rewrite is provider-backed.
+- Clipboard usage is less suitable inside Docker containers.
 
 ## Roadmap
 
-- Expand the rules and templates for the six core intents
-- Add English templates and tests
+- Expand rules for the six core intents
+- Add English rule coverage and tests
 - Add stable snapshot tests
 - Strengthen fact-preservation and fabricated-reason checks
 - Improve provider-specific error handling and integration coverage
-- Publish to PyPI for `pipx install sayit`
 
 ## Open Source Notes
 
@@ -318,12 +330,7 @@ This repository now has the minimum structure for a first public release:
 - `.gitignore`
 - `.env.example`
 - basic CI
-- local MVP
-
-Before the first public release, replace the repository placeholders in:
-
-- `pyproject.toml`
-- `.github/ISSUE_TEMPLATE/config.yml`
+- Docker runtime
 
 ## Contributing
 
@@ -336,10 +343,3 @@ See [CHANGELOG.md](CHANGELOG.md).
 ## License
 
 MIT. See [LICENSE](LICENSE).
-
-## Design Principles
-
-- controlled generation over free-form generation
-- do not invent facts by default
-- solve high-frequency short scenarios first
-- explanations matter as much as output quality
