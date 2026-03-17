@@ -1,7 +1,7 @@
 # sayit
 
 <p align="center">
-  <img src="assets/logo-wordmark.svg" width="420" alt="sayit logo">
+  <img src="assets/logo-wordmark.svg" width="700" alt="sayit logo">
 </p>
 
 [![License](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)

@@ -1,81 +1,49 @@
-<svg width="960" height="360" viewBox="0 0 960 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
-  <title id="title">sayit wordmark logo</title>
-  <desc id="desc">The sayit logo with a speech bubble icon and the project name underneath.</desc>
+<svg width="1120" height="360" viewBox="0 0 1120 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">sayit wordmark</title>
+  <desc id="desc">The sayit logo with a large speech bubble icon and the project name.</desc>
   <defs>
-    <linearGradient id="bubbleStroke" x1="158" y1="42" x2="324" y2="198" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0EA5E9"/>
-      <stop offset="0.52" stop-color="#22C55E"/>
-      <stop offset="1" stop-color="#14B8A6"/>
+    <linearGradient id="bubble" x1="52" y1="28" x2="374" y2="328" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF7A59"/>
+      <stop offset="1" stop-color="#FF4D6D"/>
     </linearGradient>
-    <linearGradient id="bubbleFill" x1="170" y1="50" x2="310" y2="176" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0EA5E9" stop-opacity="0.16"/>
-      <stop offset="1" stop-color="#22C55E" stop-opacity="0.08"/>
-    </linearGradient>
-    <linearGradient id="quoteFill" x1="192" y1="78" x2="259" y2="154" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FBBF24"/>
-      <stop offset="1" stop-color="#F97316"/>
-    </linearGradient>
-    <linearGradient id="swoosh" x1="194" y1="180" x2="318" y2="116" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#22C55E"/>
-      <stop offset="1" stop-color="#0EA5E9"/>
-    </linearGradient>
-    <linearGradient id="spark" x1="282" y1="70" x2="310" y2="100" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#FB7185"/>
-      <stop offset="1" stop-color="#F59E0B"/>
-    </linearGradient>
-    <linearGradient id="wordmark" x1="304" y1="252" x2="640" y2="336" gradientUnits="userSpaceOnUse">
+    <linearGradient id="text" x1="420" y1="96" x2="920" y2="272" gradientUnits="userSpaceOnUse">
       <stop stop-color="#0F172A"/>
       <stop offset="1" stop-color="#334155"/>
     </linearGradient>
   </defs>
 
-  <path
-    d="M154 64C154 50.745 164.745 40 178 40H278C291.255 40 302 50.745 302 64V130C302 143.255 291.255 154 278 154H224.6L194.08 178.972C188.849 183.252 181 179.53 181 172.771V154H178C164.745 154 154 143.255 154 130V64Z"
-    fill="url(#bubbleFill)"
-    stroke="url(#bubbleStroke)"
-    stroke-width="12"
-    stroke-linejoin="round"
-  />
+  <g transform="translate(-32 -32) scale(1.31)">
+    <path
+      d="M60 112C60 72.235 92.235 40 132 40H228C267.765 40 300 72.235 300 112V184C300 223.765 267.765 256 228 256H173.5L129 299.018C119.663 308.047 104 301.432 104 288.444V256H132C92.235 256 60 223.765 60 184V112Z"
+      fill="url(#bubble)"
+    />
 
-  <g fill="url(#quoteFill)">
-    <circle cx="191" cy="94" r="10"/>
-    <rect x="181" y="102" width="20" height="34" rx="10"/>
-    <rect x="178" y="129" width="15" height="30" rx="7.5" transform="rotate(18 178 129)"/>
+    <g fill="white">
+      <path d="M126 138C126 123.641 137.641 112 152 112H157V135C157 149.359 145.359 161 131 161H126V138Z"/>
+      <path d="M130 161H157V182C157 199.121 143.121 213 126 213H119V192C119 174.879 132.879 161 150 161H130Z"/>
+      <path d="M182 138C182 123.641 193.641 112 208 112H213V135C213 149.359 201.359 161 187 161H182V138Z"/>
+      <path d="M186 161H213V182C213 199.121 199.121 213 182 213H175V192C175 174.879 188.879 161 206 161H186Z"/>
+    </g>
 
-    <circle cx="231" cy="94" r="10"/>
-    <rect x="221" y="102" width="20" height="34" rx="10"/>
-    <rect x="218" y="129" width="15" height="30" rx="7.5" transform="rotate(18 218 129)"/>
+    <circle cx="260" cy="98" r="14" fill="#0F172A" fill-opacity="0.14"/>
   </g>
 
-  <path
-    d="M186 174C205 186 233 189 258 181C275 175 289 165 299 150"
-    stroke="url(#swoosh)"
-    stroke-width="12"
-    stroke-linecap="round"
-  />
-  <path
-    d="M286 148L301 148L296 162"
-    stroke="url(#swoosh)"
-    stroke-width="12"
+  <g
+    transform="translate(404 86) skewX(-8)"
+    stroke="url(#text)"
+    stroke-width="18"
     stroke-linecap="round"
     stroke-linejoin="round"
-  />
-
-  <path
-    d="M288 66L292.222 77.778L304 82L292.222 86.222L288 98L283.778 86.222L272 82L283.778 77.778L288 66Z"
-    fill="url(#spark)"
-  />
-
-  <text
-    x="480"
-    y="292"
-    text-anchor="middle"
-    fill="url(#wordmark)"
-    font-size="92"
-    font-weight="800"
-    letter-spacing="-2"
-    font-family="ui-sans-serif, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif"
+    fill="none"
   >
-    sayit
-  </text>
+    <path d="M116 84C103 70 79 64 57 67C36 70 22 84 22 101C22 121 41 128 70 133C97 137 112 144 112 159C112 178 93 190 67 190C45 190 27 183 16 170"/>
+    <path d="M162 124C162 88 184 64 214 64C243 64 265 89 265 123C265 156 243 180 214 180C184 180 162 156 162 124Z"/>
+    <path d="M265 103V178"/>
+    <path d="M308 66V136C308 162 326 178 349 178C377 178 396 154 396 121V66"/>
+    <path d="M396 121C396 193 368 227 316 227"/>
+    <path d="M451 88V176"/>
+    <path d="M451 54V54.5"/>
+    <path d="M498 40V176"/>
+    <path d="M470 89H532"/>
+  </g>
 </svg>
