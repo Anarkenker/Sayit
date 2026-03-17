@@ -1,0 +1,84 @@
+- id: follow_up_accusatory
+  intent: follow_up
+  weight: 1.6
+  patterns:
+    - "怎么还没"
+    - "还没弄完"
+    - "还没做完"
+    - "还没回复"
+    - "还没发"
+  risk_flags:
+    - accusatory
+    - too_blunt
+- id: follow_up_progress
+  intent: follow_up
+  weight: 1.2
+  patterns:
+    - "进度"
+    - "跟进"
+    - "催一下"
+    - "同步一下"
+  risk_flags:
+    - lacks_timepoint
+- id: refusal_social
+  intent: refusal
+  weight: 1.4
+  patterns:
+    - "不想去"
+    - "来不了"
+    - "先不去了"
+    - "去不了"
+  risk_flags:
+    - too_blunt
+- id: refusal_business
+  intent: refusal
+  weight: 1.3
+  patterns:
+    - "这个不行"
+    - "做不了"
+    - "没法接受"
+  risk_flags:
+    - too_vague
+- id: request_money
+  intent: request
+  weight: 1.5
+  patterns:
+    - "先把钱转我"
+    - "转我"
+    - "麻烦你先"
+    - "帮我处理"
+  risk_flags:
+    - commanding
+    - too_blunt
+- id: apology_delay
+  intent: apology
+  weight: 1.3
+  patterns:
+    - "延期"
+    - "不好意思"
+    - "抱歉"
+    - "来晚了"
+  risk_flags:
+    - lacks_collaboration
+- id: negotiation_price
+  intent: negotiation
+  weight: 1.6
+  patterns:
+    - "太贵了"
+    - "价格太高"
+    - "预算"
+    - "优惠"
+    - "便宜一点"
+  risk_flags:
+    - too_blunt
+- id: complaint_issue
+  intent: complaint
+  weight: 1.4
+  patterns:
+    - "有问题"
+    - "不太满意"
+    - "一直没解决"
+    - "体验很差"
+  risk_flags:
+    - too_blunt
+    - lacks_collaboration

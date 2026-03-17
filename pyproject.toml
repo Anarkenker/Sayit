@@ -1,0 +1,75 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sayit"
+version = "0.1.0"
+description = "Rewrite blunt messages into sendable short-form language."
+readme = "README.md"
+requires-python = ">=3.11"
+license = {file = "LICENSE"}
+authors = [
+  {name = "Sayit contributors"},
+]
+keywords = [
+  "cli",
+  "rewrite",
+  "tone",
+  "communication",
+  "ai",
+  "templates",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Environment :: Console",
+  "Intended Audience :: End Users/Desktop",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: MIT License",
+  "Natural Language :: Chinese (Simplified)",
+  "Natural Language :: English",
+  "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Topic :: Software Development :: Libraries :: Python Modules",
+  "Topic :: Text Processing",
+  "Topic :: Utilities",
+]
+dependencies = [
+  "httpx>=0.28,<1",
+  "pydantic>=2.7,<3",
+  "python-dotenv>=1.0,<2",
+  "pyperclip>=1.9,<2",
+  "pyyaml>=6.0,<7",
+  "rich>=13.9,<14",
+  "typer>=0.12,<1",
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.3,<9",
+]
+
+[project.scripts]
+sayit = "sayit.main:run"
+
+# Replace these placeholders with the real repository URL before the first public release.
+[project.urls]
+Homepage = "https://github.com/REPLACE_ME/sayit"
+Repository = "https://github.com/REPLACE_ME/sayit"
+Issues = "https://github.com/REPLACE_ME/sayit/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+sayit = ["templates/**/*.yaml"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
