@@ -77,3 +77,24 @@ def test_cli_clipboard_error_is_user_facing(monkeypatch) -> None:
     assert result.exit_code == 2
     assert "Clipboard is unavailable in this environment." in result.output
     assert "Traceback" not in result.output
+
+
+def test_cli_tui_quits_cleanly() -> None:
+    result = runner.invoke(app, ["tui"], input="0\n")
+
+    assert result.exit_code == 0
+    assert "Rewrite a message into safer versions" in result.stdout
+    assert "Bye." in result.stdout
+
+
+def test_cli_tui_rewrite_flow(monkeypatch) -> None:
+    monkeypatch.setattr("sayit.tui.build_services", _fake_build_services)
+    result = runner.invoke(
+        app,
+        ["tui"],
+        input="1\nn\n你这个怎么还没弄完\n\n\n\n3\nauto\n\nplain\n\n0\n",
+    )
+
+    assert result.exit_code == 0
+    assert "Rewrite Result" in result.stdout
+    assert "polite:你这个怎么还没弄完" in result.stdout

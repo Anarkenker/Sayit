@@ -7,3 +7,7 @@ def test_normalize_argv_inserts_rewrite_command() -> None:
 
 def test_normalize_argv_keeps_known_commands() -> None:
     assert normalize_argv(["explain", "你好"]) == ["explain", "你好"]
+
+
+def test_normalize_argv_keeps_tui_command() -> None:
+    assert normalize_argv(["tui"]) == ["tui"]

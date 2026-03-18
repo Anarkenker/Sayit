@@ -3,14 +3,8 @@ from pathlib import Path
 import typer
 from rich.console import Console
 
-from sayit.app.services.explain_service import ExplainService
-from sayit.app.services.rewrite_service import RewriteService
-from sayit.domain.planner import RewritePlanner
-from sayit.domain.scoring import CandidateScorer
-from sayit.domain.validators import CandidateValidator
 from sayit.domain.models import ContextType, ModeType, RewriteRequest, ToneType
-from sayit.engines.ai.manager import AIRewriteManager, ProviderUnavailableError
-from sayit.engines.local.detector import LocalIntentDetector
+from sayit.engines.ai.manager import ProviderUnavailableError
 from sayit.engines.local.rules import RuleRepository
 from sayit.infra.config import (
     load_config,
@@ -24,6 +18,8 @@ from sayit.input.adapters.stdin import StdinInputAdapter
 from sayit.input.errors import InputResolutionError
 from sayit.input.normalizer import normalize_text
 from sayit.output.formatter import format_explain, format_rewrite
+from sayit.runtime import build_services
+from sayit.tui import run_tui
 
 app = typer.Typer(
     invoke_without_command=True,
@@ -41,26 +37,7 @@ app.add_typer(rules_app, name="rules")
 
 console = Console()
 error_console = Console(stderr=True)
-
-
-def build_services() -> tuple[RewriteService, ExplainService]:
-    config = load_config()
-    rules = RuleRepository()
-    detector = LocalIntentDetector(rules)
-    planner = RewritePlanner()
-    rewrite_service = RewriteService(
-        config=config,
-        detector=detector,
-        planner=planner,
-        validator=CandidateValidator(),
-        scorer=CandidateScorer(),
-        ai_manager=AIRewriteManager(config),
-    )
-    explain_service = ExplainService(detector=detector, planner=planner)
-    return rewrite_service, explain_service
-
-
-KNOWN_COMMANDS = {"rewrite", "explain", "config", "providers", "rules"}
+KNOWN_COMMANDS = {"rewrite", "explain", "config", "providers", "rules", "tui"}
 
 
 def normalize_argv(argv: list[str]) -> list[str]:
@@ -75,6 +52,11 @@ def normalize_argv(argv: list[str]) -> list[str]:
 @app.callback()
 def main() -> None:
     """Command group entrypoint."""
+
+
+@app.command()
+def tui() -> None:
+    run_tui(console=console)
 
 
 @app.command("rewrite")

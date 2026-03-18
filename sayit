@@ -23,6 +23,11 @@ maybe_start_docker
 ensure_image
 
 run_args=(run --rm --env-file "$ROOT_DIR/.env" -v "$PWD:/workspace" -w /workspace)
+interactive_tui=false
+
+if [[ "${1:-}" == "tui" ]]; then
+  interactive_tui=true
+fi
 
 use_clipboard=false
 for arg in "$@"; do
@@ -46,9 +51,18 @@ if [[ "$use_clipboard" == true ]]; then
   run_args+=(-e "SAYIT_CLIPBOARD_TEXT=$clipboard_text")
 fi
 
-while IFS= read -r flag; do
-  [[ -n "$flag" ]] && run_args+=("$flag")
-done < <(docker_run_flags)
+if [[ "$interactive_tui" == true ]]; then
+  if [[ ! -t 0 || ! -t 1 ]]; then
+    print_note "sayit tui requires an interactive terminal."
+    print_note "Run it directly in a terminal window instead of through a non-interactive pipe."
+    exit 2
+  fi
+  run_args+=(-it)
+else
+  while IFS= read -r flag; do
+    [[ -n "$flag" ]] && run_args+=("$flag")
+  done < <(docker_run_flags)
+fi
 
 run_args+=("$IMAGE_NAME" "$@")
 
