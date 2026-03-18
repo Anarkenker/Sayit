@@ -1,14 +1,14 @@
 <svg width="1120" height="360" viewBox="0 0 1120 360" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
   <title id="title">sayit wordmark</title>
-  <desc id="desc">The sayit logo with a large speech bubble icon and the project name.</desc>
+  <desc id="desc">The sayit logo with a large speech bubble icon and the project name, optimized for dark backgrounds.</desc>
   <defs>
     <linearGradient id="bubble" x1="52" y1="28" x2="374" y2="328" gradientUnits="userSpaceOnUse">
       <stop stop-color="#FF7A59"/>
       <stop offset="1" stop-color="#FF4D6D"/>
     </linearGradient>
     <linearGradient id="text" x1="420" y1="96" x2="920" y2="272" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#0F172A"/>
-      <stop offset="1" stop-color="#334155"/>
+      <stop stop-color="#FFF7ED"/>
+      <stop offset="1" stop-color="#FDBA74"/>
     </linearGradient>
   </defs>
 
@@ -25,7 +25,7 @@
       <path d="M186 161H213V182C213 199.121 199.121 213 182 213H175V192C175 174.879 188.879 161 206 161H186Z"/>
     </g>
 
-    <circle cx="260" cy="98" r="14" fill="#0F172A" fill-opacity="0.14"/>
+    <circle cx="260" cy="98" r="14" fill="#FFF7ED" fill-opacity="0.2"/>
   </g>
 
   <g
