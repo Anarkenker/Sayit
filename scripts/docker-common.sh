@@ -9,6 +9,51 @@ print_note() {
   printf '%s\n' "$1"
 }
 
+load_host_clipboard() {
+  if [[ "${SAYIT_CLIPBOARD_TEXT+set}" == "set" ]]; then
+    printf '%s' "$SAYIT_CLIPBOARD_TEXT"
+    return 0
+  fi
+
+  case "$(uname -s)" in
+    Darwin)
+      command -v pbpaste >/dev/null 2>&1 || return 1
+      pbpaste
+      return $?
+      ;;
+    Linux)
+      if command -v wl-paste >/dev/null 2>&1; then
+        wl-paste --no-newline
+        return $?
+      fi
+      if command -v xclip >/dev/null 2>&1; then
+        xclip -selection clipboard -o
+        return $?
+      fi
+      if command -v xsel >/dev/null 2>&1; then
+        xsel --clipboard --output
+        return $?
+      fi
+      ;;
+    *)
+      if command -v pwsh >/dev/null 2>&1; then
+        pwsh -NoProfile -Command Get-Clipboard
+        return $?
+      fi
+      if command -v powershell >/dev/null 2>&1; then
+        powershell -NoProfile -Command Get-Clipboard
+        return $?
+      fi
+      if command -v powershell.exe >/dev/null 2>&1; then
+        powershell.exe -NoProfile -Command Get-Clipboard
+        return $?
+      fi
+      ;;
+  esac
+
+  return 1
+}
+
 ensure_docker_cli() {
   if ! command -v docker >/dev/null 2>&1; then
     print_note "Docker is not installed. Please install Docker Desktop first."
@@ -54,12 +99,48 @@ maybe_start_docker() {
 }
 
 build_image() {
+  local source_hash
+  source_hash="$(image_source_hash)"
   print_note "Building Docker image '$IMAGE_NAME'..."
-  docker build -t "$IMAGE_NAME" "$ROOT_DIR"
+  docker build --label "sayit.source_hash=$source_hash" -t "$IMAGE_NAME" "$ROOT_DIR"
+}
+
+image_source_hash() {
+  (
+    cd "$ROOT_DIR"
+    {
+      shasum Dockerfile
+      shasum pyproject.toml
+      shasum README.md
+      shasum README.zh-CN.md
+      find src -type f | LC_ALL=C sort | while IFS= read -r file; do
+        shasum "$file"
+      done
+    } | shasum | awk '{print $1}'
+  )
+}
+
+image_needs_rebuild() {
+  local current_hash
+  local image_hash
+
+  current_hash="$(image_source_hash)"
+  image_hash="$(
+    docker image inspect \
+      -f '{{ index .Config.Labels "sayit.source_hash" }}' \
+      "$IMAGE_NAME" 2>/dev/null || true
+  )"
+
+  [[ -z "$image_hash" || "$image_hash" != "$current_hash" ]]
 }
 
 ensure_image() {
   if ! docker image inspect "$IMAGE_NAME" >/dev/null 2>&1; then
+    build_image
+    return
+  fi
+
+  if image_needs_rebuild; then
     build_image
   fi
 }

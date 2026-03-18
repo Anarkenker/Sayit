@@ -21,6 +21,7 @@ from sayit.input.adapters.argv import ArgvInputAdapter
 from sayit.input.adapters.clipboard import ClipboardInputAdapter
 from sayit.input.adapters.file import FileInputAdapter
 from sayit.input.adapters.stdin import StdinInputAdapter
+from sayit.input.errors import InputResolutionError
 from sayit.input.normalizer import normalize_text
 from sayit.output.formatter import format_explain, format_rewrite
 
@@ -194,17 +195,21 @@ def rules_list(
 
 
 def _resolve_input(text_or_path: str | None, clipboard: bool):
-    if clipboard:
-        return ClipboardInputAdapter().load()
+    try:
+        if clipboard:
+            return ClipboardInputAdapter().load()
 
-    if text_or_path:
-        candidate_path = Path(text_or_path)
-        if candidate_path.exists() and candidate_path.is_file():
-            return FileInputAdapter().load(text_or_path)
-        return ArgvInputAdapter().load(text_or_path)
+        if text_or_path:
+            candidate_path = Path(text_or_path)
+            if candidate_path.exists() and candidate_path.is_file():
+                return FileInputAdapter().load(text_or_path)
+            return ArgvInputAdapter().load(text_or_path)
 
-    if not typer.get_text_stream("stdin").isatty():
-        return StdinInputAdapter().load()
+        if not typer.get_text_stream("stdin").isatty():
+            return StdinInputAdapter().load()
+    except InputResolutionError as exc:
+        error_console.print(str(exc))
+        raise typer.Exit(code=2) from exc
 
     error_console.print("No input provided. Pass text, a file path, stdin, or --clipboard.")
     raise typer.Exit(code=2)

@@ -143,7 +143,7 @@ If you see a lot of flags in the examples and want to know what each one actuall
 - `sayit "..."`: treat the command-line text itself as input. This is the most common path.
 - `sayit draft.txt`: treat the file contents as input.
 - `echo "..." | sayit`: the command before the pipe prints text first, and the pipe `|` passes that text directly into `sayit`. This is useful when an earlier shell command already produced the text you want to rewrite.
-- `--clipboard`: read input from the clipboard. This depends on the current environment and is less useful in some setups.
+- `--clipboard`: read input from the clipboard. When you use the installed `sayit` shell command, the host launcher reads the clipboard before entering Docker and forwards the text into the container. If you run the Docker image directly yourself, prefer stdin or pass the text explicitly.
 
 ### Rewrite-related
 

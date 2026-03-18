@@ -24,6 +24,28 @@ ensure_image
 
 run_args=(run --rm --env-file "$ROOT_DIR/.env" -v "$PWD:/workspace" -w /workspace)
 
+use_clipboard=false
+for arg in "$@"; do
+  if [[ "$arg" == "--clipboard" ]]; then
+    use_clipboard=true
+    break
+  fi
+done
+
+if [[ "$use_clipboard" == true ]]; then
+  if ! clipboard_text="$(load_host_clipboard)"; then
+    print_note "Clipboard is unavailable on the host. Try piping text into sayit or pass it as an argument."
+    exit 2
+  fi
+
+  if [[ -z "$(printf '%s' "$clipboard_text" | tr -d '[:space:]')" ]]; then
+    print_note "clipboard is empty"
+    exit 2
+  fi
+
+  run_args+=(-e "SAYIT_CLIPBOARD_TEXT=$clipboard_text")
+fi
+
 while IFS= read -r flag; do
   [[ -n "$flag" ]] && run_args+=("$flag")
 done < <(docker_run_flags)

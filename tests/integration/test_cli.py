@@ -9,6 +9,7 @@ from sayit.domain.validators import CandidateValidator
 from sayit.engines.local.detector import LocalIntentDetector
 from sayit.engines.local.rules import RuleRepository
 from sayit.infra.config import AppConfig
+from sayit.input.errors import ClipboardUnavailableError
 from sayit.test_support import FakeAIRewriteManager
 
 runner = CliRunner()
@@ -53,3 +54,26 @@ def test_cli_json_output(monkeypatch) -> None:
     assert '"detected_intent"' in result.stdout
     assert '"follow_up"' in result.stdout
     assert '"fake-ai"' in result.stdout
+
+
+def test_cli_english_input_does_not_crash_when_language_rules_are_missing(monkeypatch) -> None:
+    monkeypatch.setattr("sayit.cli.build_services", _fake_build_services)
+    result = runner.invoke(app, normalize_argv(["the price is too high", "--plain"]))
+
+    assert result.exit_code == 0
+    assert "polite:the price is too high" in result.stdout
+
+
+def test_cli_clipboard_error_is_user_facing(monkeypatch) -> None:
+    def fail_to_load(self) -> None:
+        raise ClipboardUnavailableError(
+            "Clipboard is unavailable in this environment. "
+            "Try piping text into sayit or pass it as an argument."
+        )
+
+    monkeypatch.setattr("sayit.cli.ClipboardInputAdapter.load", fail_to_load)
+    result = runner.invoke(app, normalize_argv(["--clipboard"]))
+
+    assert result.exit_code == 2
+    assert "Clipboard is unavailable in this environment." in result.output
+    assert "Traceback" not in result.output
