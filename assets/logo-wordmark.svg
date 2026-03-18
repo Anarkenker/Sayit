@@ -10,6 +10,17 @@
       <stop stop-color="#0F172A"/>
       <stop offset="1" stop-color="#334155"/>
     </linearGradient>
+    <linearGradient id="text-dark" x1="420" y1="96" x2="920" y2="272" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF7ED"/>
+      <stop offset="1" stop-color="#FDBA74"/>
+    </linearGradient>
+    <style>
+      @media (prefers-color-scheme: dark) {
+        .wordmark {
+          stroke: url(#text-dark);
+        }
+      }
+    </style>
   </defs>
 
   <g transform="translate(-32 -32) scale(1.31)">
@@ -29,6 +40,7 @@
   </g>
 
   <g
+    class="wordmark"
     transform="translate(404 86) skewX(-8)"
     stroke="url(#text)"
     stroke-width="18"
